@@ -1,0 +1,14 @@
+# Query: get data from database
+# Mutation: change data from database/server, or memory
+
+type Person {
+  id: Int!
+  name: String!
+  age: Int!
+  height: Int!
+}
+
+type Query {
+  people: [Person]!
+  person(id: Int!): Person
+}
