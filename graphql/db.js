@@ -1,49 +1,25 @@
-let movies = [
-  {
-    id: 0,
-    name: "Star Wars - The new one",
-    score: 10
-  },
-  {
-    id: 1,
-    name: "Avengers - The new one",
-    score: 8
-  },
-  {
-    id: 2,
-    name: "The Godfather I",
-    score: 99
-  },
-  {
-    id: 3,
-    name: "Logan",
-    score: 2
+import fetch from 'node-fetch'
+
+// integrate server with different URL
+const API_URL = "https://yts.am/api/v2/list_movies.json?";
+
+export const getMovies = (limit, rating) => {
+  let REQUEST_URL = API_URL;
+  if (limit > 0) {
+    REQUEST_URL += `limit=${limit}`;
   }
-];
-
-export const getMovies = () => movies;
-
-export const getById = id => {
-  const filteredMovies = movie.filter(movie => movie.id === id);
-  return filteredMovies[0];
-};
-
-export const addMovie = (name, score) => {
-  const newMovie = {
-    id: movies.length + 1,
-    name,
-    score
-  };
-  movies.push(newMovie);
-  return newMovie;
-};
-
-export const deleteMovie = id => {
-  const cleanedMovies = movies.filter(movie => movie.id !== id);
-  if (movies.length > cleanedMovies.length) {
-    movies = cleanedMovies;
-    return true;
-  } else {
-    return false;
+  if (rating > 0) {
+    REQUEST_URL += `&minimum_rating=${rating}`;
   }
+  return fetch(REQUEST_URL)
+    .then(res => res.json())
+    .then(json => json.data.movies);
 }
+
+/**
+ * @todo
+ * It seems that when value bigger than 9.0 is requested as rating param,
+ * the REST API does not response the correct JSON array.
+ * It returns movie list of lower ratings between 4~5, but I can not find the reason.
+ * I think it might be the problem of yts api perhaps.
+ */
